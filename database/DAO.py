@@ -21,33 +21,10 @@ class DAO():
         cursor.close()
         conn.close()
         return results
-    @staticmethod
-    def getAllMoviesbyRange(rat1, rat2):
-        conn = DBConnect.get_connection()
-
-        results = []
-
-        cursor = conn.cursor(dictionary=True)
-        query = """select distinct rm.name_id as ActorID, n.name as Name 
-                    from movie m, role_mapping rm, ratings r, names n 
-                    where n.id = rm.name_id 
-                    and m.id = rm.movie_id 
-                    and m.id = r.movie_id 
-                    and r.avg_rating >= %s
-                    and r.avg_rating <= %s"""
-
-        cursor.execute(query, (rat1,rat2))
-
-        for row in cursor:
-            results.append(Actor(**row))
-
-        cursor.close()
-        conn.close()
-        return results
 
 
     @staticmethod
-    def getAllMoviesbyRange(rat1, rat2):
+    def getAllActorsbyRange(rat1, rat2):
         conn = DBConnect.get_connection()
 
         results = []

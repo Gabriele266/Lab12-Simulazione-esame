@@ -12,7 +12,7 @@ class Model:
 
     def buildGraph(self, rat1, rat2):
         self._graph.clear()
-        self._actors = DAO.getAllMoviesbyRange(rat1, rat2)
+        self._actors = DAO.getAllActorsbyRange(rat1, rat2)
         for a in self._actors:
             self._idMap[a.ActorID] = a
 
@@ -22,6 +22,15 @@ class Model:
         for e1, e2, w in self._edges:
             self._graph.add_edge(self._idMap[e1], self._idMap[e2], weight=w)
 
+    def getTop5Edges(self):
+
+        edges = sorted(
+            self._graph.edges(data=True),
+            key=lambda x: x[2]["weight"],
+            reverse=True
+        )
+
+        return edges[:5]
     def getBestPath(self):
 
         self._bestPath = []
