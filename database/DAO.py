@@ -1,3 +1,5 @@
+from typing import Any
+
 from database.DB_connect import DBConnect
 from model.Actor import Actor
 
@@ -37,6 +39,20 @@ class DAO:
         cursor.close()
         connection.close()
         return res
+
+    @staticmethod
+    def load_selectable_values() -> list[float]:
+        query = "SELECT DISTINCT(avg_rating) possible_values FROM ratings;"
+        connection = DBConnect.get_connection()
+        cursor = connection.cursor()
+
+        data = tuple()
+        cursor.execute(query, data)
+        res = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+        return sorted(list(map(lambda el: el[0], res)))
 
     @staticmethod
     def get_statistics_table(min_rating, max_rating):

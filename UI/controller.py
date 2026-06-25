@@ -1,6 +1,8 @@
 import flet as ft
 import networkx as nx
 
+from database.DAO import DAO
+
 
 class Controller:
     def __init__(self, view, model):
@@ -10,10 +12,32 @@ class Controller:
         self._model = model
 
     def fillDDsRating(self):
-        pass
+        possible_values = DAO.load_selectable_values()
+        dd1: ft.Dropdown = self._view._ddrating1
+        dd2: ft.Dropdown = self._view._ddrating2
+
+        dd1.options = [
+           ft.dropdown.Option(key=str(v), text=str(v)) for v in possible_values
+        ]
+        dd2.options = [
+            ft.dropdown.Option(key=str(v), text=str(v)) for v in possible_values
+        ]
 
     def handleCreaGrafo(self, e):
-        self._model.create_graph()
+        min_r = self._view._ddrating1.value
+        max_r = self._view._ddrating2.value
+
+        if min_r is None or max_r is None:
+            self._view.create_alert("Selezionare un intervallo di rating")
+            return
+
+        m = float(min_r)
+        M = float(max_r)
+
+        if m > M:
+            self._view.create_alert("Il primo deve essere minore del secondo")
+
+        self._model.create_graph(m, M)
         txt_result: ft.ListView = self._view.txt_result
         graph: nx.Graph = self._model.graph
 

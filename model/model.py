@@ -12,17 +12,20 @@ class Model:
         self.graph = nx.Graph()
         self._id_map: defaultdict[str, Actor] = defaultdict()
 
-    def create_graph(self):
-        actors = DAO.get_all_actors_in_rating_range(1.2, 2.7)
+    def create_graph(self, min_rating: float, max_rating: float):
+        actors = DAO.get_all_actors_in_rating_range(min_rating, max_rating)
 
         # Creo la id map
         self._id_map = defaultdict()
+        self.graph.clear()
+
         for actor in actors:
             self._id_map[actor.id] = actor
 
         self.graph.add_nodes_from(actors)
 
-        statistic_table = DAO.get_statistics_table(1.2, 2.7)
+        print("Creazione grafo iniziata")
+        statistic_table = DAO.get_statistics_table(min_rating, max_rating)
 
         for a, b in itertools.combinations(actors, 2):
             # Film in cui ha recitato l'attore A, sotto forma di id-map a partire dalla tabella statistiche
@@ -36,7 +39,7 @@ class Model:
                 movies_in_common = { k: films_a[k] for k in intersection}       # Informazioni sui film in comune prese dalla tabella delle statistiche
                 weight = self.__calc_weight(movies_in_common)
                 self.graph.add_edge(a, b, weight=weight)
-
+        print("Creazione grafo terminata")
 
     def load_films_for_actor(self, id: str, all_actors_stat):
         id_map = defaultdict()

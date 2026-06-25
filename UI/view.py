@@ -23,7 +23,6 @@ class View(ft.UserControl):
         self._title = ft.Text("TdP-Simulazione esame imdb", color="blue", size=24)
         self._page.controls.append(self._title)
 
-
         self._ddrating1 = ft.Dropdown(label="Voto", hint_text="Rating")
         self._ddrating2 = ft.Dropdown(label="Voto", hint_text="Rating")
         self._controller.fillDDsRating()
